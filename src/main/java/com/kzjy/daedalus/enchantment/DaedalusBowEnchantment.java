@@ -5,6 +5,11 @@ import com.kzjy.daedalus.enchantment.util.EnchantmentTheme;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
+/**
+ * @author Kzjy<br>
+ * 代达罗斯之弓附魔<br>
+ * 显著提升弓箭、弩及三叉戟的蓄力速度
+ */
 public class DaedalusBowEnchantment extends DaedalusBaseEnchantment {
     public DaedalusBowEnchantment() {
         super(Rarity.VERY_RARE, EnchantmentCategory.BOW, new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND},

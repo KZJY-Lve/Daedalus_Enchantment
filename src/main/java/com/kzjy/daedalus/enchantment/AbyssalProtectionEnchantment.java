@@ -5,6 +5,11 @@ import com.kzjy.daedalus.enchantment.util.EnchantmentTheme;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
+/**
+ * @author Kzjy<br>
+ * 深渊的加护附魔<br>
+ * 赋予穿戴者深渊庇护效果，提供减伤与闪避
+ */
 public class AbyssalProtectionEnchantment extends DaedalusBaseEnchantment {
     public AbyssalProtectionEnchantment() {
         super(Rarity.VERY_RARE, EnchantmentCategory.ARMOR_CHEST, new EquipmentSlot[]{EquipmentSlot.CHEST},

@@ -5,6 +5,11 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
+/**
+ * @author Kzjy<br>
+ * 深渊诅咒效果<br>
+ * 削减目标的护甲与韧性，并降低其输出伤害
+ */
 public class AbyssalCurseEffect extends MobEffect {
     public AbyssalCurseEffect() {
         super(MobEffectCategory.HARMFUL, 0x100010);

@@ -5,6 +5,11 @@ import com.kzjy.daedalus.enchantment.util.EnchantmentTheme;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
+/**
+ * @author Kzjy<br>
+ * 虚空撕裂附魔<br>
+ * 造成基于攻击力的真实伤害，并有几率触发诸神黄昏斩杀低血量目标
+ */
 public class VoidRendEnchantment extends DaedalusBaseEnchantment {
     public VoidRendEnchantment() {
         super(Rarity.VERY_RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND},

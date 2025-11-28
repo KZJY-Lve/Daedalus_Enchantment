@@ -13,6 +13,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+/**
+ * @author Kzjy<br>
+ * 灵魂饥渴附魔<br>
+ * 击杀生物收集灵魂，满魂状态下造成巨额爆发伤害
+ */
 public class SoulThirstEnchantment extends DaedalusBaseEnchantment {
     public SoulThirstEnchantment() {
         super(Rarity.VERY_RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND},
@@ -28,7 +33,9 @@ public class SoulThirstEnchantment extends DaedalusBaseEnchantment {
     @Override
     public boolean isTreasureOnly() { return !isEnabled() || DaedalusConfig.COMMON.soulThirstTreasure.get(); }
 
-    // [新增] 显示灵魂数
+    /**
+     * 在物品提示框中显示当前收集的灵魂数量
+     */
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
         if (stack.hasTag() && stack.getTag().contains("DaedalusSouls")) {
             int souls = stack.getTag().getInt("DaedalusSouls");

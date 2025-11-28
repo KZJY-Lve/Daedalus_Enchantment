@@ -38,6 +38,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * @author Kzjy<br>
+ * 代达罗斯模组的核心事件处理类<br>
+ * 涵盖了所有附魔的逻辑实现，包括攻击流程、伤害计算、死亡处理及 Tick 更新
+ */
 @Mod.EventBusSubscriber(modid = Daedalus.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class DaedalusEvents {
     private static final Random RANDOM = new Random();
@@ -66,13 +71,17 @@ public class DaedalusEvents {
     // 1. 攻击初始化 (Attack Phase)
     // =================================================================================================
 
+    /**
+     * 玩家攻击事件覆写<br>
+     * 处理虚空破壁附魔的物理攻击破无敌逻辑
+     */
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onPlayerAttackOverride(AttackEntityEvent event) {
         if (event.getEntity().level().isClientSide) return;
         Player player = event.getEntity();
         ItemStack stack = player.getMainHandItem();
 
-        // #8 虚空破壁: 物理攻击破无敌
+        // 虚空破壁: 物理攻击破无敌
         if (DaedalusConfig.COMMON.voidBreachEnabled.get() &&
                 EnchantmentHelper.getItemEnchantmentLevel(DaedalusRegistries.VOID_BREACH.get(), stack) > 0) {
             if (event.getTarget() instanceof LivingEntity target) {
@@ -87,19 +96,23 @@ public class DaedalusEvents {
         }
     }
 
+    /**
+     * 生物攻击初始化<br>
+     * 标记伤害源属性，处理虚空破壁与耀星之噬的预处理逻辑
+     */
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onLivingAttackInit(LivingAttackEvent event) {
         if (event.getEntity().level().isClientSide) return;
         if (event.getSource().getEntity() instanceof LivingEntity attacker) {
             ItemStack weapon = attacker.getMainHandItem();
 
-            // #8 虚空破壁: 标记伤害源
+            // 虚空破壁: 标记伤害源
             if (DaedalusConfig.COMMON.voidBreachEnabled.get() &&
                     EnchantmentHelper.getItemEnchantmentLevel(DaedalusRegistries.VOID_BREACH.get(), weapon) > 0) {
                 if (event.getSource() instanceof IDaedalusDamageSource ds) ds.daedalus$setVoidBreach(true);
             }
 
-            // #12 耀星之噬: 绝对真伤初始化
+            // 耀星之噬: 绝对真伤初始化
             if (DaedalusConfig.COMMON.stellarEaterEnabled.get() &&
                     EnchantmentHelper.getItemEnchantmentLevel(DaedalusRegistries.STELLAR_EATER.get(), weapon) > 0) {
                 if (event.getSource() instanceof IDaedalusDamageSource ds) ds.daedalus$setBypassAll(true);
@@ -112,7 +125,10 @@ public class DaedalusEvents {
         }
     }
 
-    // 强制恢复被取消的 Attack 事件
+    /**
+     * 强制恢复被取消的 Attack 事件<br>
+     * 确保耀星之噬的攻击无法被其他模组取消
+     */
     @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = true)
     public static void onLivingAttackEnforce(LivingAttackEvent event) {
         if (event.isCanceled() && event.getSource() instanceof IDaedalusDamageSource ds && ds.daedalus$isBypassAll()) {
@@ -124,18 +140,22 @@ public class DaedalusEvents {
     // 2. 伤害计算前置 (Hurt Phase)
     // =================================================================================================
 
+    /**
+     * 伤害计算前置处理<br>
+     * 再次确认无敌帧移除与事件锁定，防止在 Hurt 阶段被拦截
+     */
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onLivingHurtPre(LivingHurtEvent event) {
         if (event.getSource().getEntity() instanceof LivingEntity attacker) {
             ItemStack weapon = attacker.getMainHandItem();
 
-            // #8 虚空破壁
+            // 虚空破壁
             if (DaedalusConfig.COMMON.voidBreachEnabled.get() &&
                     EnchantmentHelper.getItemEnchantmentLevel(DaedalusRegistries.VOID_BREACH.get(), weapon) > 0) {
                 event.getEntity().invulnerableTime = 0;
             }
 
-            // #12 耀星之噬: 再次锁死
+            // 耀星之噬: 再次锁死
             if (DaedalusConfig.COMMON.stellarEaterEnabled.get() &&
                     EnchantmentHelper.getItemEnchantmentLevel(DaedalusRegistries.STELLAR_EATER.get(), weapon) > 0) {
                 if (event.getSource() instanceof IDaedalusDamageSource ds) ds.daedalus$setBypassAll(true);
@@ -147,12 +167,16 @@ public class DaedalusEvents {
         }
     }
 
+    /**
+     * 伤害逻辑计算<br>
+     * 处理诅咒锁链、罪孽印记、神圣裁决、灵魂饥渴及生命虹吸的具体效果
+     */
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void onLivingHurtLogic(LivingHurtEvent event) {
         if (event.getSource().getEntity() instanceof LivingEntity attacker) {
             ItemStack weapon = attacker.getMainHandItem();
 
-            // #3 诅咒锁链
+            // 诅咒锁链
             if (DaedalusConfig.COMMON.cursedChainEnabled.get()) {
                 int level = EnchantmentHelper.getItemEnchantmentLevel(DaedalusRegistries.CURSED_CHAIN.get(), weapon);
                 if (level > 0) {
@@ -172,7 +196,7 @@ public class DaedalusEvents {
                 }
             }
 
-            // #4 罪孽印记
+            // 罪孽印记
             if (DaedalusConfig.COMMON.markOfSinEnabled.get()) {
                 int level = EnchantmentHelper.getItemEnchantmentLevel(DaedalusRegistries.MARK_OF_SIN_ENCHANT.get(), weapon);
                 if (level > 0) {
@@ -181,7 +205,7 @@ public class DaedalusEvents {
                 }
             }
 
-            // #9 神圣裁决
+            // 神圣裁决
             if (DaedalusConfig.COMMON.divineJudgmentEnabled.get()) {
                 int level = EnchantmentHelper.getItemEnchantmentLevel(DaedalusRegistries.DIVINE_JUDGMENT.get(), weapon);
                 if (level > 0 && event.getEntity().getMobType() == MobType.UNDEAD) {
@@ -195,7 +219,7 @@ public class DaedalusEvents {
                 }
             }
 
-            // #6 灵魂饥渴 (伤害部分)
+            // 灵魂饥渴 (伤害部分)
             if (DaedalusConfig.COMMON.soulThirstEnabled.get()) {
                 int level = EnchantmentHelper.getItemEnchantmentLevel(DaedalusRegistries.SOUL_THIRST.get(), weapon);
                 if (level > 0) {
@@ -218,7 +242,7 @@ public class DaedalusEvents {
                 }
             }
 
-            // #11 生命虹吸
+            // 生命虹吸
             if (DaedalusConfig.COMMON.lifeSiphonEnabled.get()) {
                 int level = EnchantmentHelper.getItemEnchantmentLevel(DaedalusRegistries.LIFE_SIPHON.get(), weapon);
                 if (level > 0) {
@@ -234,12 +258,16 @@ public class DaedalusEvents {
     // 3. 最终伤害结算 (Damage Phase)
     // =================================================================================================
 
+    /**
+     * 最终伤害结算初始化<br>
+     * 再次锁定耀星之噬与虚空撕裂的伤害数值，防止在 Damage 阶段被修改
+     */
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onLivingDamageInit(LivingDamageEvent event) {
         if (event.getSource().getEntity() instanceof LivingEntity attacker) {
             ItemStack weapon = attacker.getMainHandItem();
 
-            // #12 耀星之噬: 再次锁死 (针对 LivingDamageEvent 新对象)
+            // 耀星之噬: 再次锁死 (针对 LivingDamageEvent 新对象)
             if (DaedalusConfig.COMMON.stellarEaterEnabled.get() &&
                     EnchantmentHelper.getItemEnchantmentLevel(DaedalusRegistries.STELLAR_EATER.get(), weapon) > 0) {
                 if (event.isCanceled()) event.setCanceled(false);
@@ -249,7 +277,7 @@ public class DaedalusEvents {
                 }
             }
 
-            // #5 虚空撕裂: 开启“只能增伤”锁，保护真伤底线
+            // 虚空撕裂: 开启“只能增伤”锁，保护真伤底线
             else if (DaedalusConfig.COMMON.voidRendEnabled.get() &&
                     EnchantmentHelper.getItemEnchantmentLevel(DaedalusRegistries.VOID_REND.get(), weapon) > 0) {
                 if (event instanceof IDaedalusLivingEvent dle) {
@@ -259,13 +287,17 @@ public class DaedalusEvents {
         }
     }
 
+    /**
+     * 最终伤害强制执行<br>
+     * 处理耀星之噬的底线伤害、虚空撕裂的斩杀、虚空破壁的伤害上限突破及不朽的动态减伤
+     */
     @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = true)
     public static void onLivingDamageEnforce(LivingDamageEvent event) {
         if (event.getSource().getEntity() instanceof LivingEntity attacker) {
             ItemStack weapon = attacker.getMainHandItem();
             LivingEntity target = event.getEntity();
 
-            // #12 耀星之噬: 强制伤害底线
+            // 耀星之噬: 强制伤害底线
             if (DaedalusConfig.COMMON.stellarEaterEnabled.get() &&
                     EnchantmentHelper.getItemEnchantmentLevel(DaedalusRegistries.STELLAR_EATER.get(), weapon) > 0) {
                 if (event.isCanceled()) event.setCanceled(false);
@@ -278,7 +310,7 @@ public class DaedalusEvents {
                 target.invulnerableTime = 0;
             }
 
-            // #5 虚空撕裂
+            // 虚空撕裂
             if (DaedalusConfig.COMMON.voidRendEnabled.get()) {
                 int level = EnchantmentHelper.getItemEnchantmentLevel(DaedalusRegistries.VOID_REND.get(), weapon);
                 if (level > 0) {
@@ -300,7 +332,7 @@ public class DaedalusEvents {
                 }
             }
 
-            // #8 虚空破壁: 伤害上限突破
+            // 虚空破壁: 伤害上限突破
             if (EnchantmentHelper.getItemEnchantmentLevel(DaedalusRegistries.VOID_BREACH.get(), weapon) > 0) {
                 float cap = getCataclysmDamageCap(target);
                 if (cap != Float.MAX_VALUE && event.getAmount() > cap) {
@@ -309,7 +341,7 @@ public class DaedalusEvents {
             }
         }
 
-        // #13 不朽 (Immortal): 动态减伤
+        // 不朽 (Immortal): 动态减伤
         LivingEntity victim = event.getEntity();
         if (DaedalusConfig.COMMON.immortalEnabled.get()) {
             int level = getArmorEnchantmentLevel(victim, DaedalusRegistries.IMMORTAL.get());
@@ -346,18 +378,22 @@ public class DaedalusEvents {
     // 4. 死亡事件 (Death Phase)
     // =================================================================================================
 
+    /**
+     * 死亡事件初始化<br>
+     * 耀星之噬锁定复活，灵魂饥渴收集灵魂
+     */
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onLivingDeathInit(LivingDeathEvent event) {
         if (event.getSource().getEntity() instanceof LivingEntity attacker) {
             ItemStack weapon = attacker.getMainHandItem();
-            // #12 耀星之噬: 锁死复活
+            // 耀星之噬: 锁死复活
             if (DaedalusConfig.COMMON.stellarEaterEnabled.get() &&
                     EnchantmentHelper.getItemEnchantmentLevel(DaedalusRegistries.STELLAR_EATER.get(), weapon) > 0) {
                 if (event instanceof IDaedalusLivingEvent dle) dle.daedalus$setUncancelable(true);
             }
         }
 
-        // #6 灵魂饥渴: 收集灵魂
+        // 灵魂饥渴: 收集灵魂
         if (event.getSource().getEntity() instanceof Player player && DaedalusConfig.COMMON.soulThirstEnabled.get()) {
             ItemStack weapon = player.getMainHandItem();
             int level = EnchantmentHelper.getItemEnchantmentLevel(DaedalusRegistries.SOUL_THIRST.get(), weapon);
@@ -371,11 +407,15 @@ public class DaedalusEvents {
         }
     }
 
+    /**
+     * 死亡事件强制执行<br>
+     * 确保耀星之噬击杀的目标无法通过事件取消来复活
+     */
     @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = true)
     public static void onLivingDeathEnforce(LivingDeathEvent event) {
         if (event.getSource().getEntity() instanceof LivingEntity attacker) {
             ItemStack weapon = attacker.getMainHandItem();
-            // #12 耀星之噬: 强制执行死亡
+            // 耀星之噬: 强制执行死亡
             if (DaedalusConfig.COMMON.stellarEaterEnabled.get() &&
                     EnchantmentHelper.getItemEnchantmentLevel(DaedalusRegistries.STELLAR_EATER.get(), weapon) > 0) {
                 if (event.isCanceled()) event.setCanceled(false);
@@ -388,6 +428,10 @@ public class DaedalusEvents {
     // 5. 治疗事件 (Heal Phase)
     // =================================================================================================
 
+    /**
+     * 治疗事件初始化<br>
+     * 处理天使的加护带来的治疗增幅及无视禁疗效果
+     */
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onLivingHealInit(LivingHealEvent event) {
         LivingEntity entity = event.getEntity();
@@ -398,7 +442,7 @@ public class DaedalusEvents {
             float originalAmount = event.getAmount();
             float boostedAmount = originalAmount * (1.0f + level);
 
-            // #10 天使的加护: 无视禁疗
+            // 天使的加护: 无视禁疗
             if (level >= 4) {
                 if (event.isCanceled()) event.setCanceled(false);
                 if (event instanceof IDaedalusLivingEvent dle) {
@@ -415,12 +459,16 @@ public class DaedalusEvents {
     // 6. 其他逻辑 (Tick, Tooltip, Effects)
     // =================================================================================================
 
+    /**
+     * 生物 Tick 更新<br>
+     * 处理不朽的计时器、负面效果清除以及深渊/天使加护的 Buff 施加
+     */
     @SubscribeEvent
     public static void onLivingTick(LivingEvent.LivingTickEvent event) {
         if (event.getEntity().level().isClientSide) return;
         LivingEntity entity = event.getEntity();
 
-        // #13 不朽: 计时器逻辑
+        // 不朽: 计时器逻辑
         CompoundTag data = entity.getPersistentData();
         int immortalTimer = data.getInt("DaedalusImmortalTimer");
         if (immortalTimer > 0) {
@@ -432,7 +480,7 @@ public class DaedalusEvents {
 
         if (entity.tickCount % 10 != 0) return;
 
-        // #13 不朽: 清除负面效果
+        // 不朽: 清除负面效果
         if (DaedalusConfig.COMMON.immortalEnabled.get()) {
             int level = getArmorEnchantmentLevel(entity, DaedalusRegistries.IMMORTAL.get());
             if (level > 0) {
@@ -445,7 +493,7 @@ public class DaedalusEvents {
             }
         }
 
-        // #7 深渊的加护: 给予 Buff
+        // 深渊的加护: 给予 Buff
         if (DaedalusConfig.COMMON.abyssalProtectionEnabled.get()) {
             ItemStack chest = entity.getItemBySlot(EquipmentSlot.CHEST);
             int level = EnchantmentHelper.getItemEnchantmentLevel(DaedalusRegistries.ABYSSAL_PROTECTION_ENCHANT.get(), chest);
@@ -455,7 +503,7 @@ public class DaedalusEvents {
             }
         }
 
-        // #10 天使的加护: 给予 Buff
+        // 天使的加护: 给予 Buff
         if (entity instanceof Player player) {
             boolean hasAngel = false;
             if (DaedalusConfig.COMMON.angelicProtectionEnabled.get()) {
@@ -483,7 +531,10 @@ public class DaedalusEvents {
         }
     }
 
-    // #13 不朽: 防止施加负面效果
+    /**
+     * 药水效果应用判定<br>
+     * 不朽附魔防止施加负面效果
+     */
     @SubscribeEvent
     public static void onMobEffectApplicable(MobEffectEvent.Applicable event) {
         if (DaedalusConfig.COMMON.immortalEnabled.get() && event.getEffectInstance().getEffect().getCategory() == MobEffectCategory.HARMFUL) {
@@ -494,7 +545,10 @@ public class DaedalusEvents {
         }
     }
 
-    // #2 深渊凝视
+    /**
+     * 玩家 Tick 更新<br>
+     * 处理深渊凝视的视线判定逻辑
+     */
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if (event.phase != TickEvent.Phase.END || event.player.level().isClientSide || event.player.tickCount % 5 != 0) return;
@@ -524,7 +578,10 @@ public class DaedalusEvents {
         }
     }
 
-    // #1 代达罗斯之弓: 蓄力速度
+    /**
+     * 物品使用 Tick 更新<br>
+     * 处理代达罗斯之弓的蓄力速度加成
+     */
     @SubscribeEvent
     public static void onItemUseTick(LivingEntityUseItemEvent.Tick event) {
         if (!DaedalusConfig.COMMON.daedalusBowEnabled.get()) return;
@@ -549,7 +606,10 @@ public class DaedalusEvents {
         }
     }
 
-    // #6 灵魂饥渴: Tooltip
+    /**
+     * 物品提示框事件<br>
+     * 显示灵魂饥渴的灵魂数量
+     */
     @SubscribeEvent
     public static void onItemTooltip(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
@@ -560,7 +620,10 @@ public class DaedalusEvents {
         }
     }
 
-    // 深渊诅咒: 减少输出伤害
+    /**
+     * 输出伤害事件<br>
+     * 处理深渊诅咒对攻击者造成的伤害削减
+     */
     @SubscribeEvent
     public static void onOutputDamage(LivingHurtEvent event) {
         if (event.getSource().getEntity() instanceof LivingEntity attacker) {
@@ -573,7 +636,10 @@ public class DaedalusEvents {
         }
     }
 
-    // 深渊庇护 & 天使庇佑: 防御逻辑
+    /**
+     * 防御事件<br>
+     * 处理深渊庇护的闪避与减伤，以及天使庇佑对亡灵的防御加成
+     */
     @SubscribeEvent
     public static void onDefend(LivingHurtEvent event) {
         LivingEntity victim = event.getEntity();

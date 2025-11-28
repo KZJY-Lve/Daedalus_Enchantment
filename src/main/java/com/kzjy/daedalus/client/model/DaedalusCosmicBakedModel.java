@@ -30,6 +30,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author Kzjy<br>
+ * 星空特效烘焙模型<br>
+ * 负责渲染带有动态星空 Shader 的物品模型，并根据附魔主题调整颜色
+ */
 public class DaedalusCosmicBakedModel extends WrappedItemModel {
     public static final float[] COSMIC_UVS = new float[40];
     private final List<ResourceLocation> maskSprite;
@@ -82,7 +87,7 @@ public class DaedalusCosmicBakedModel extends WrappedItemModel {
             }
         }
 
-        // [修正] 统一使用星空渲染 (DAEDALUS_COSMIC)
+        // 统一使用星空渲染 (DAEDALUS_COSMIC)
         RenderType renderType = DaedalusRenderTypes.DAEDALUS_COSMIC;
         ShaderInstance shaderInstance = DaedalusRenderTypes.cosmicShader;
 

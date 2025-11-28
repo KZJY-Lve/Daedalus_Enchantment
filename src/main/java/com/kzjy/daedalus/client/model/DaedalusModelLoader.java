@@ -19,6 +19,11 @@ import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
 import java.util.Collections;
 import java.util.function.Function;
 
+/**
+ * @author Kzjy<br>
+ * 自定义模型加载器<br>
+ * 用于解析 JSON 中的 daedalus_cosmic 属性，加载星空特效模型
+ */
 public class DaedalusModelLoader implements IGeometryLoader<DaedalusModelLoader.DaedalusCosmicGeometry> {
 
     @Override

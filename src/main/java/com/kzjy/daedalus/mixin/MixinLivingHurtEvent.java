@@ -8,6 +8,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+/**
+ * @author Kzjy<br>
+ * 混入 LivingHurtEvent 类<br>
+ * 用于拦截并强制执行“只能增伤”逻辑，保护真实伤害不被削减
+ */
 @Mixin(value = LivingHurtEvent.class, remap = false)
 public abstract class MixinLivingHurtEvent {
     @Shadow(remap = false) public abstract float getAmount();

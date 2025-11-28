@@ -5,6 +5,11 @@ import com.kzjy.daedalus.enchantment.util.EnchantmentTheme;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
+/**
+ * @author Kzjy<br>
+ * 深渊凝视附魔<br>
+ * 当玩家注视目标时，给予目标深渊诅咒效果
+ */
 public class AbyssalGazeEnchantment extends DaedalusBaseEnchantment {
     public AbyssalGazeEnchantment() {
         super(Rarity.VERY_RARE, EnchantmentCategory.ARMOR_HEAD, new EquipmentSlot[]{EquipmentSlot.HEAD},

@@ -11,6 +11,11 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
+/**
+ * @author Kzjy<br>
+ * 代达罗斯模组主类<br>
+ * 负责模组初始化、注册表加载及事件总线注册
+ */
 @Mod(Daedalus.MODID)
 public class Daedalus {
     public static final String MODID = "daedalus";

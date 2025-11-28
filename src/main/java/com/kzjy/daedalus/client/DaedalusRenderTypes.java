@@ -12,6 +12,11 @@ import net.minecraftforge.client.event.RegisterShadersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+/**
+ * @author Kzjy<br>
+ * 自定义渲染类型与着色器注册<br>
+ * 处理星空特效 Shader 的加载与 RenderType 定义
+ */
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = Daedalus.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class DaedalusRenderTypes extends RenderType {
 
@@ -22,8 +27,10 @@ public class DaedalusRenderTypes extends RenderType {
     // 保留星空 Shader 变量
     public static ShaderInstance cosmicShader;
 
-    // [删除] public static ShaderInstance tooltipShader;
-
+    /**
+     * 注册着色器事件<br>
+     * 加载 daedalus_cosmic 着色器
+     */
     @SubscribeEvent
     public static void registerShaders(RegisterShadersEvent event) {
         try {

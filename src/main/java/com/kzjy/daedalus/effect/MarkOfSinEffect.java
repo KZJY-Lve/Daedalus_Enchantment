@@ -5,6 +5,11 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 
+/**
+ * @author Kzjy<br>
+ * 罪孽印记效果<br>
+ * 周期性对目标造成基于最大生命值百分比的伤害
+ */
 public class MarkOfSinEffect extends MobEffect {
     public MarkOfSinEffect() {
         super(MobEffectCategory.HARMFUL, 0x8B0000);
@@ -18,7 +23,7 @@ public class MarkOfSinEffect extends MobEffect {
         float damageAmount = maxHealth * (basePercent + (amplifier * 0.01f));
 
         // 随机伤害类型兼容
-        DamageSource source = entity.damageSources().magic(); // 默认魔法，可扩展随机逻辑
+        DamageSource source = entity.damageSources().magic(); // 默认魔法
         entity.hurt(source, damageAmount);
     }
 

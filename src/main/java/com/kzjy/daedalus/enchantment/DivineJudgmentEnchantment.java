@@ -6,6 +6,11 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
+/**
+ * @author Kzjy<br>
+ * 神圣裁决附魔<br>
+ * 对亡灵生物造成巨额伤害并有几率治愈僵尸村民
+ */
 public class DivineJudgmentEnchantment extends DaedalusBaseEnchantment {
     public DivineJudgmentEnchantment() {
         super(Rarity.VERY_RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND},
@@ -34,6 +39,6 @@ public class DivineJudgmentEnchantment extends DaedalusBaseEnchantment {
 
     @Override
     public float getDamageBonus(int level, MobType type) {
-        return 0.0f; // 伤害逻辑在 Event 中处理
+        return 0.0f; // 实际伤害计算逻辑在 Event 中处理以实现百分比加成
     }
 }

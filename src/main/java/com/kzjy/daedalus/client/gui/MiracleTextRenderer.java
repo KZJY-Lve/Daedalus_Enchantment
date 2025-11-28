@@ -9,6 +9,11 @@ import org.joml.Matrix4f;
 
 import java.awt.Color;
 
+/**
+ * @author Kzjy<br>
+ * 奇迹附魔文本渲染器<br>
+ * 实现彩虹色渐变与动态抖动效果
+ */
 public class MiracleTextRenderer implements ClientTooltipComponent {
     private final FormattedCharSequence text;
     private final String rawString;

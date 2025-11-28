@@ -15,6 +15,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+/**
+ * @author Kzjy<br>
+ * 混入 LivingEntity 类<br>
+ * 处理图腾拦截逻辑与天使加护的飞行能力
+ */
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity extends Entity {
 
@@ -25,7 +30,10 @@ public abstract class MixinLivingEntity extends Entity {
     @Shadow public abstract boolean hasEffect(net.minecraft.world.effect.MobEffect p_21024_);
     @Shadow public abstract MobEffectInstance getEffect(net.minecraft.world.effect.MobEffect p_21025_);
 
-    // 1. 拦截图腾 (耀星之噬 / 虚空破壁)
+    /**
+     * 拦截图腾触发<br>
+     * 当伤害源具有 BypassAll 属性（如耀星之噬、虚空破壁）时，阻止不死图腾生效
+     */
     @Inject(method = "checkTotemDeathProtection", at = @At("HEAD"), cancellable = true)
     private void daedalus$blockTotems(DamageSource source, CallbackInfoReturnable<Boolean> cir) {
         if (source instanceof IDaedalusDamageSource ds && ds.daedalus$isBypassAll()) {
@@ -33,7 +41,10 @@ public abstract class MixinLivingEntity extends Entity {
         }
     }
 
-    // 2. 天使的加护: 创造飞行
+    /**
+     * 天使的加护：创造飞行逻辑<br>
+     * 在生物 tick 更新时，若玩家拥有足够等级的天使庇佑，赋予其飞行能力
+     */
     @Inject(method = "tick", at = @At("HEAD"))
     private void daedalus$angelFlight(CallbackInfo ci) {
         LivingEntity self = (LivingEntity)(Object)this;

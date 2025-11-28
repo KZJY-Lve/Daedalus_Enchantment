@@ -5,6 +5,11 @@ import com.kzjy.daedalus.enchantment.util.EnchantmentTheme;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
+/**
+ * @author Kzjy<br>
+ * 诅咒锁链附魔<br>
+ * 降低自身造成的伤害，但附加基于原始伤害百分比的诅咒伤害
+ */
 public class CursedChainEnchantment extends DaedalusBaseEnchantment {
     public CursedChainEnchantment() {
         super(Rarity.VERY_RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND},

@@ -10,6 +10,11 @@ import org.joml.Matrix4f;
 
 import java.awt.Color;
 
+/**
+ * @author Kzjy<br>
+ * 代达罗斯通用文本渲染器<br>
+ * 根据附魔主题渲染动态颜色与浮动效果
+ */
 public class DaedalusTextRenderer implements ClientTooltipComponent {
     private final FormattedCharSequence text;
     private final String rawString;

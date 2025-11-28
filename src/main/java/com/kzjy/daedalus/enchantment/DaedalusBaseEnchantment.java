@@ -10,6 +10,11 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 import javax.annotation.Nonnull;
 
+/**
+ * @author Kzjy<br>
+ * 代达罗斯附魔基类<br>
+ * 统一处理附魔的主题颜色、名称显示及启用状态检查
+ */
 public abstract class DaedalusBaseEnchantment extends Enchantment {
 
     private final EnchantmentTheme theme;
