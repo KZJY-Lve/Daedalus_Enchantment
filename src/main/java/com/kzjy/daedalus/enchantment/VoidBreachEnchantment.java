@@ -1,0 +1,33 @@
+package com.kzjy.daedalus.enchantment;
+
+import com.kzjy.daedalus.config.DaedalusConfig;
+import com.kzjy.daedalus.enchantment.util.EnchantmentTheme;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+
+public class VoidBreachEnchantment extends DaedalusBaseEnchantment {
+    public VoidBreachEnchantment() {
+        super(Rarity.VERY_RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND},
+                EnchantmentTheme.VOID, false);
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return DaedalusConfig.COMMON.voidBreachEnabled.get();
+    }
+
+    @Override
+    public int getMaxLevel() {
+        return 1;
+    }
+
+    @Override
+    public boolean isTradeable() {
+        return isEnabled() && DaedalusConfig.COMMON.voidBreachTradeable.get();
+    }
+
+    @Override
+    public boolean isTreasureOnly() {
+        return !isEnabled() || DaedalusConfig.COMMON.voidBreachTreasure.get();
+    }
+}

@@ -1,0 +1,22 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.kzjy.daedalus.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "daedalus.refmap.json",
+  "mixins": [
+    "MixinDamageSource",
+    "MixinDamageSources",
+    "MixinLivingDamageEvent",
+    "MixinLivingEntity",
+    "MixinLivingEvent",
+    "MixinLivingHealEvent",
+    "MixinLivingHurtEvent",
+    "ZombieVillagerInvoker"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+  ]
+}

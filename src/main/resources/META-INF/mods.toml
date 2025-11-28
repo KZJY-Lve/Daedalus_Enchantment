@@ -1,0 +1,41 @@
+# 模组加载器配置
+modLoader="javafml"
+loaderVersion="[47,)"
+license="MIT"
+
+[[mods]]
+modId="daedalus"
+version="${mod_version}"
+displayName="Daedalus"
+logoFile="logo.png"
+credits="Thanks to the Forge team"
+authors="空枝霁雨"
+displayURL=""
+description='''
+Daedalus adds a collection of powerful enchantments with unique mechanics.
+Features include Holy Judgment, Void Rend, Abyssal Gaze, and more.
+'''
+
+# 依赖项：Forge
+[[dependencies.daedalus]]
+modId="forge"
+mandatory=true
+versionRange="[47,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.daedalus]]
+modId="renderblender"
+mandatory=true
+versionRange="[0.0,)"
+ordering="AFTER"
+side="CLIENT"
+
+
+# 依赖项：Minecraft
+[[dependencies.daedalus]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.20.1,1.21)"
+ordering="NONE"
+side="BOTH"
