@@ -12,8 +12,8 @@ import javax.annotation.Nonnull;
 
 /**
  * @author Kzjy<br>
- * 代达罗斯附魔基类<br>
- * 统一处理附魔的主题颜色、名称显示及启用状态检查
+ * 附魔基类<br>
+ * 统一处理主题颜色、名称格式化及启用状态<br>
  */
 public abstract class DaedalusBaseEnchantment extends Enchantment {
 
@@ -50,7 +50,6 @@ public abstract class DaedalusBaseEnchantment extends Enchantment {
         if (isCurse) {
             name.withStyle(ChatFormatting.RED);
         } else {
-            // 恢复为简单的静态颜色，不再有流光和抖动
             name.withStyle(theme.getChatColor());
         }
 

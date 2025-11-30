@@ -10,8 +10,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
  * @author Kzjy<br>
- * 混入 LivingDamageEvent 类<br>
- * 用于拦截并强制执行“只能增伤”逻辑，在最终伤害结算阶段保护数值
+ * LivingDamageEvent 混入<br>
+ * 拦截 setAmount, 防止最终伤害被削减<br>
  */
 @Mixin(value = LivingDamageEvent.class, remap = false)
 public abstract class MixinLivingDamageEvent {
@@ -21,7 +21,7 @@ public abstract class MixinLivingDamageEvent {
     private void daedalus$interceptSetAmount(float amount, CallbackInfo ci) {
         if (((IDaedalusLivingEvent) (Object) this).daedalus$isOnlyAmountUp()) {
             if (amount < this.getAmount()) {
-                ci.cancel(); // 拒绝减小数值
+                ci.cancel();
             }
         }
     }

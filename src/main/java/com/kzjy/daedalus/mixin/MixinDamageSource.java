@@ -13,8 +13,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
  * @author Kzjy<br>
- * 混入 DamageSource 类<br>
- * 实现了 IDaedalusDamageSource 接口，用于强制伤害源匹配特定标签（如穿透无敌、穿透护甲）
+ * 伤害源混入<br>
+ * 实现 IDaedalusDamageSource 接口, 强制注入伤害标签<br>
+ * <p>
+ * 逻辑:<br>
+ * - VoidBreach: 穿透无敌/冷却<br>
+ * - BypassAll: 穿透护甲/盾牌/无敌/抗性/冷却/药水及灾变模组防御<br>
  */
 @Mixin(DamageSource.class)
 public class MixinDamageSource implements IDaedalusDamageSource {
@@ -31,8 +35,8 @@ public class MixinDamageSource implements IDaedalusDamageSource {
     @Override public boolean daedalus$hasTag(byte tag) { return daedalus$tags[tag]; }
 
     /**
-     * 强制伤害源匹配特定 Tag<br>
-     * 当开启 BypassAll 或 VoidBreach 时，使伤害源被视为穿透伤害
+     * 强制 Tag 匹配<br>
+     * 当开启特殊模式时, 欺骗系统认为该伤害源包含特定 Tag
      */
     @Inject(method = "is(Lnet/minecraft/tags/TagKey;)Z", at = @At("HEAD"), cancellable = true)
     private void daedalus$forceTags(TagKey<DamageType> tagKey, CallbackInfoReturnable<Boolean> cir) {

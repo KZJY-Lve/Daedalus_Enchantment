@@ -18,5 +18,4 @@ public class AbyssalCurseEffect extends MobEffect {
         // 每级 -5% 韧性
         this.addAttributeModifier(Attributes.ARMOR_TOUGHNESS, "D053F825-7977-444F-9689-7B7E14083873", -0.05, AttributeModifier.Operation.MULTIPLY_TOTAL);
     }
-    // 伤害减少逻辑在 DaedalusEvents.onOutputDamage 中处理
 }

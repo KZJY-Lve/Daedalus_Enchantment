@@ -7,11 +7,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import java.awt.Color;
 
-/**
- * @author Kzjy<br>
- * 附魔主题枚举<br>
- * 定义了不同附魔系列的颜色、名称及渐变渲染逻辑
- */
 public enum EnchantmentTheme {
     ABYSS("深渊", 0x1E3A8A, 0x3B82F6, ChatFormatting.DARK_BLUE),
     CURSE("诅咒", 0x7E22CE, 0xC084FC, ChatFormatting.DARK_PURPLE),
@@ -20,7 +15,9 @@ public enum EnchantmentTheme {
     NATURE("自然", 0x166534, 0x22C55E, ChatFormatting.DARK_GREEN),
     VOID("虚空", 0x333333, 0x888888, ChatFormatting.DARK_GRAY),
     DAEDALUS("代达罗斯", 0x78350F, 0xD97706, ChatFormatting.GOLD),
-    MIRACLE("奇迹", 0xFFFFFF, 0xFFFFFF, ChatFormatting.LIGHT_PURPLE);
+    MIRACLE("奇迹", 0xFFFFFF, 0xFFFFFF, ChatFormatting.LIGHT_PURPLE),
+    LOVE_BLUE("爱之诗-蓝", 0x00BFFF, 0x1E90FF, ChatFormatting.BLUE),
+    LAVENDER("爱之诗-幻", 0xB0C4DE, 0x9370DB, ChatFormatting.LIGHT_PURPLE);
 
     private final String chineseName;
     private final int primaryColor;
@@ -43,10 +40,6 @@ public enum EnchantmentTheme {
         return createGradientColor(color1, color2, cycleLength, null);
     }
 
-    /**
-     * 创建基于时间的动态渐变颜色<br>
-     * 用于 Tooltip 或特殊渲染效果
-     */
     public static int createGradientColor(int color1, int color2, int cycleLength, EnchantmentTheme overrideTheme) {
         if (FMLEnvironment.dist == Dist.CLIENT) {
             long time = 0;

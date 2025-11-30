@@ -1,5 +1,22 @@
 {
   "itemGroup.daedalus": "Daedalus",
+  "item.daedalus.love_poem_sword": "Parting Gift: Poem of Love",
+  "item.daedalus.love_poem_sword.hold_alt": "Hold Alt for details",
+  "item.daedalus.love_poem_sword.speed_value": "Inori",
+
+  "item.daedalus.love_poem_sword.desc0.line1": "When the stars fade into oblivion",
+  "item.daedalus.love_poem_sword.desc0.line2": "When fate writes its final chapter",
+  "item.daedalus.love_poem_sword.desc0.line3": "My only regret is the tear-filled ending",
+  "item.daedalus.love_poem_sword.desc0.line4": "The world left for you",
+
+  "item.daedalus.love_poem_sword.desc1.line1": "You will love me no longer",
+  "item.daedalus.love_poem_sword.desc1.line2": "Nor will you need me",
+  "item.daedalus.love_poem_sword.desc1.line3": "So I remain here, all alone",
+  "item.daedalus.love_poem_sword.desc1.line4": "What did you say back then?",
+  "item.daedalus.love_poem_sword.desc1.line5": "Words that cannot be conveyed drift in the air",
+  "item.daedalus.love_poem_sword.desc1.line6": "Though I know it in my heart",
+  "item.daedalus.love_poem_sword.desc1.line7": "Today I still make every wish that cannot come true",
+
   "enchantment.daedalus.daedalus_bow": "Daedalus Bow",
   "enchantment.daedalus.daedalus_bow.desc": "Increases charging speed for bows, crossbows, and tridents.",
   "enchantment.daedalus.abyssal_gaze": "Abyssal Gaze",

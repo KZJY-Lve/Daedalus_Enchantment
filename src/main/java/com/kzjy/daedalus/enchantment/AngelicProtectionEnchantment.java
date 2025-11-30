@@ -8,7 +8,7 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 /**
  * @author Kzjy<br>
  * 天使的加护附魔<br>
- * 赋予穿戴者天使庇佑效果，提供飞行能力与亡灵减伤
+ * 效果: 飞行能力, 亡灵减伤<br>
  */
 public class AngelicProtectionEnchantment extends DaedalusBaseEnchantment {
     public AngelicProtectionEnchantment() {

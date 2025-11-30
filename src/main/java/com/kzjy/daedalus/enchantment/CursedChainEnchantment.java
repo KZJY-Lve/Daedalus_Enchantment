@@ -8,12 +8,12 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 /**
  * @author Kzjy<br>
  * 诅咒锁链附魔<br>
- * 降低自身造成的伤害，但附加基于原始伤害百分比的诅咒伤害
+ * 效果: 降低自身伤害, 附加百分比诅咒伤害<br>
  */
 public class CursedChainEnchantment extends DaedalusBaseEnchantment {
     public CursedChainEnchantment() {
         super(Rarity.VERY_RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND},
-                EnchantmentTheme.CURSE, false); // 不是真正的诅咒附魔(指isCurse=false)，只是主题是诅咒
+                EnchantmentTheme.CURSE, false);
     }
 
     @Override

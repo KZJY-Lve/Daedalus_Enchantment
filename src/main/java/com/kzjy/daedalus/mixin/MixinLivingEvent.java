@@ -9,8 +9,8 @@ import org.spongepowered.asm.mixin.Unique;
 
 /**
  * @author Kzjy<br>
- * 混入 LivingEvent 类以扩展事件控制能力<br>
- * 实现了 IDaedalusLivingEvent 接口，允许强制事件不可取消或锁定数值增长
+ * LivingEvent 混入<br>
+ * 实现事件状态的强制控制 (不可取消/仅增伤)<br>
  */
 @Mixin(LivingEvent.class)
 public abstract class MixinLivingEvent extends EntityEvent implements IDaedalusLivingEvent {
@@ -42,25 +42,25 @@ public abstract class MixinLivingEvent extends EntityEvent implements IDaedalusL
     }
 
     /**
-     * 重写 setCanceled 方法<br>
-     * 当 daedalus$uncancelable 为 true 时，拒绝任何取消操作
+     * 拒绝取消操作<br>
+     * 当 daedalus$uncancelable 为 true 时生效
      */
     @Override
     public void setCanceled(boolean cancel) {
         if (this.daedalus$uncancelable && cancel) {
-            return; // 拒绝取消
+            return;
         }
         super.setCanceled(cancel);
     }
 
     /**
-     * 重写 isCanceled 方法<br>
-     * 当 daedalus$uncancelable 为 true 时，强制返回 false
+     * 伪造未取消状态<br>
+     * 当 daedalus$uncancelable 为 true 时强制返回 false
      */
     @Override
     public boolean isCanceled() {
         if (this.daedalus$uncancelable) {
-            return false; // 强制伪造未取消状态
+            return false;
         }
         return super.isCanceled();
     }
