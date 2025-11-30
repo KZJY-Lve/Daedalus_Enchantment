@@ -8,7 +8,7 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 /**
  * @author Kzjy<br>
  * 耀星之噬附魔<br>
- * 造成绝对真实伤害，无视一切减免、无敌与复活机制
+ * 效果: 绝对真实伤害, 穿透一切防御<br>
  */
 public class StellarEaterEnchantment extends DaedalusBaseEnchantment {
     public StellarEaterEnchantment() {

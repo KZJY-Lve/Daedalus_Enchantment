@@ -5,8 +5,8 @@ import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * @author Kzjy<br>
- * 代达罗斯模组的通用配置文件<br>
- * 包含所有附魔的开关、数值平衡设置以及详细的效果说明文档
+ * 通用配置文件<br>
+ * 包含所有附魔的开关、数值平衡及详细文档说明<br>
  */
 public class DaedalusConfig {
     public static final Common COMMON;
@@ -19,21 +19,21 @@ public class DaedalusConfig {
     }
 
     public static class Common {
-        // #1 代达罗斯之弓 / Daedalus Bow
+        // #1 代达罗斯之弓
         public final ForgeConfigSpec.BooleanValue daedalusBowEnabled;
         public final ForgeConfigSpec.IntValue daedalusBowMaxLevel;
         public final ForgeConfigSpec.BooleanValue daedalusBowTradeable;
         public final ForgeConfigSpec.BooleanValue daedalusBowTreasure;
         public final ForgeConfigSpec.DoubleValue daedalusBowSpeedPerLevel;
 
-        // #2 深渊凝视 / Abyssal Gaze
+        // #2 深渊凝视
         public final ForgeConfigSpec.BooleanValue abyssalGazeEnabled;
         public final ForgeConfigSpec.IntValue abyssalGazeMaxLevel;
         public final ForgeConfigSpec.BooleanValue abyssalGazeTradeable;
         public final ForgeConfigSpec.BooleanValue abyssalGazeTreasure;
         public final ForgeConfigSpec.IntValue abyssalGazeCurseLevelPerLevel;
 
-        // #3 诅咒锁链 / Cursed Chain
+        // #3 诅咒锁链
         public final ForgeConfigSpec.BooleanValue cursedChainEnabled;
         public final ForgeConfigSpec.IntValue cursedChainMaxLevel;
         public final ForgeConfigSpec.BooleanValue cursedChainTradeable;
@@ -42,14 +42,14 @@ public class DaedalusConfig {
         public final ForgeConfigSpec.DoubleValue cursedChainReductionRecoveryPerLevel;
         public final ForgeConfigSpec.DoubleValue cursedChainBonusDamagePerLevel;
 
-        // #4 罪孽印记 / Mark of Sin
+        // #4 罪孽印记
         public final ForgeConfigSpec.BooleanValue markOfSinEnabled;
         public final ForgeConfigSpec.IntValue markOfSinMaxLevel;
         public final ForgeConfigSpec.BooleanValue markOfSinTradeable;
         public final ForgeConfigSpec.BooleanValue markOfSinTreasure;
         public final ForgeConfigSpec.IntValue markOfSinLevelPerLevel;
 
-        // #5 虚空撕裂 / Void Rend
+        // #5 虚空撕裂
         public final ForgeConfigSpec.BooleanValue voidRendEnabled;
         public final ForgeConfigSpec.IntValue voidRendMaxLevel;
         public final ForgeConfigSpec.BooleanValue voidRendTradeable;
@@ -58,7 +58,7 @@ public class DaedalusConfig {
         public final ForgeConfigSpec.DoubleValue voidRendRagnarokThreshold;
         public final ForgeConfigSpec.DoubleValue voidRendRagnarokChancePerLevel;
 
-        // #6 灵魂饥渴 / Soul Thirst
+        // #6 灵魂饥渴
         public final ForgeConfigSpec.BooleanValue soulThirstEnabled;
         public final ForgeConfigSpec.IntValue soulThirstMaxLevel;
         public final ForgeConfigSpec.BooleanValue soulThirstTradeable;
@@ -68,19 +68,19 @@ public class DaedalusConfig {
         public final ForgeConfigSpec.DoubleValue soulThirstBaseBonus;
         public final ForgeConfigSpec.DoubleValue soulThirstBonusPerLevel;
 
-        // #7 深渊的加护 / Abyssal Protection
+        // #7 深渊的加护
         public final ForgeConfigSpec.BooleanValue abyssalProtectionEnabled;
         public final ForgeConfigSpec.IntValue abyssalProtectionMaxLevel;
         public final ForgeConfigSpec.BooleanValue abyssalProtectionTradeable;
         public final ForgeConfigSpec.BooleanValue abyssalProtectionTreasure;
         public final ForgeConfigSpec.IntValue abyssalProtectionLevelPerLevel;
 
-        // #8 虚空破壁 / Void Breach
+        // #8 虚空破壁
         public final ForgeConfigSpec.BooleanValue voidBreachEnabled;
         public final ForgeConfigSpec.BooleanValue voidBreachTradeable;
         public final ForgeConfigSpec.BooleanValue voidBreachTreasure;
 
-        // #9 神圣裁决 / Divine Judgment
+        // #9 神圣裁决
         public final ForgeConfigSpec.BooleanValue divineJudgmentEnabled;
         public final ForgeConfigSpec.IntValue divineJudgmentMaxLevel;
         public final ForgeConfigSpec.BooleanValue divineJudgmentTradeable;
@@ -88,14 +88,14 @@ public class DaedalusConfig {
         public final ForgeConfigSpec.DoubleValue divineJudgmentUndeadBonusPerLevel;
         public final ForgeConfigSpec.DoubleValue divineJudgmentCureChance;
 
-        // #10 天使的加护 / Angelic Protection
+        // #10 天使的加护
         public final ForgeConfigSpec.BooleanValue angelicProtectionEnabled;
         public final ForgeConfigSpec.IntValue angelicProtectionMaxLevel;
         public final ForgeConfigSpec.BooleanValue angelicProtectionTradeable;
         public final ForgeConfigSpec.BooleanValue angelicProtectionTreasure;
         public final ForgeConfigSpec.IntValue angelicProtectionLevelPerLevel;
 
-        // #11 生命虹吸 / Life Siphon
+        // #11 生命虹吸
         public final ForgeConfigSpec.BooleanValue lifeSiphonEnabled;
         public final ForgeConfigSpec.IntValue lifeSiphonMaxLevel;
         public final ForgeConfigSpec.BooleanValue lifeSiphonTradeable;
@@ -103,12 +103,12 @@ public class DaedalusConfig {
         public final ForgeConfigSpec.DoubleValue lifeSiphonBaseHeal;
         public final ForgeConfigSpec.DoubleValue lifeSiphonHealPerLevel;
 
-        // #12 耀星之噬 / Stellar Eater
+        // #12 耀星之噬
         public final ForgeConfigSpec.BooleanValue stellarEaterEnabled;
         public final ForgeConfigSpec.BooleanValue stellarEaterTradeable;
         public final ForgeConfigSpec.BooleanValue stellarEaterTreasure;
 
-        // #13 不朽 / Immortal
+        // #13 不朽
         public final ForgeConfigSpec.BooleanValue immortalEnabled;
         public final ForgeConfigSpec.IntValue immortalMaxLevel;
         public final ForgeConfigSpec.BooleanValue immortalTradeable;
@@ -118,13 +118,11 @@ public class DaedalusConfig {
         public final ForgeConfigSpec.DoubleValue immortalBaseReduction;
         public final ForgeConfigSpec.DoubleValue immortalReductionPerLevel;
 
-        // 文档占位符
         public final ForgeConfigSpec.BooleanValue documentationPlaceholder;
 
         public Common(ForgeConfigSpec.Builder builder) {
             builder.comment("Daedalus Enchantment Configuration", "代达罗斯附魔配置").push("enchantments");
 
-            // #1
             builder.push("daedalus_bow");
             daedalusBowEnabled = builder.comment("Is Daedalus Bow enabled? // 是否启用代达罗斯之弓").define("enabled", true);
             daedalusBowMaxLevel = builder.comment("Max Level // 最大等级").defineInRange("max_level", 5, 1, 10);
@@ -133,7 +131,6 @@ public class DaedalusConfig {
             daedalusBowSpeedPerLevel = builder.comment("Charge speed increase per level (0.05 = 5%) // 每级增加的拉弓速度 (0.05 = 5%)").defineInRange("speed_per_level", 0.05, 0.0, 5.0);
             builder.pop();
 
-            // #2
             builder.push("abyssal_gaze");
             abyssalGazeEnabled = builder.comment("Is Abyssal Gaze enabled? // 是否启用深渊凝视").define("enabled", true);
             abyssalGazeMaxLevel = builder.comment("Max Level // 最大等级").defineInRange("max_level", 3, 1, 10);
@@ -142,7 +139,6 @@ public class DaedalusConfig {
             abyssalGazeCurseLevelPerLevel = builder.comment("Curse level applied per enchantment level // 每级施加的深渊诅咒等级").defineInRange("curse_level_per_level", 1, 1, 10);
             builder.pop();
 
-            // #3
             builder.push("cursed_chain");
             cursedChainEnabled = builder.comment("Is Cursed Chain enabled? // 是否启用诅咒锁链").define("enabled", true);
             cursedChainMaxLevel = builder.comment("Max Level // 最大等级").defineInRange("max_level", 5, 1, 10);
@@ -153,7 +149,6 @@ public class DaedalusConfig {
             cursedChainBonusDamagePerLevel = builder.comment("Cursed damage bonus per level (0.1 = 10%) // 每级额外附带的诅咒伤害百分比 (0.1 = 10%)").defineInRange("bonus_damage", 0.1, 0.0, 10.0);
             builder.pop();
 
-            // #4
             builder.push("mark_of_sin");
             markOfSinEnabled = builder.comment("Is Mark of Sin enabled? // 是否启用罪孽印记").define("enabled", true);
             markOfSinMaxLevel = builder.comment("Max Level // 最大等级").defineInRange("max_level", 4, 1, 10);
@@ -162,7 +157,6 @@ public class DaedalusConfig {
             markOfSinLevelPerLevel = builder.comment("Effect level applied per enchantment level // 每级施加的罪孽印记等级").defineInRange("effect_level", 1, 1, 10);
             builder.pop();
 
-            // #5
             builder.push("void_rend");
             voidRendEnabled = builder.comment("Is Void Rend enabled? // 是否启用虚空撕裂").define("enabled", true);
             voidRendMaxLevel = builder.comment("Max Level // 最大等级").defineInRange("max_level", 3, 1, 10);
@@ -173,7 +167,6 @@ public class DaedalusConfig {
             voidRendRagnarokChancePerLevel = builder.comment("Ragnarok trigger chance per level (0.1 = 10%) // 每级触发诸神黄昏的概率 (0.1 = 10%)").defineInRange("ragnarok_chance", 0.1, 0.0, 1.0);
             builder.pop();
 
-            // #6
             builder.push("soul_thirst");
             soulThirstEnabled = builder.comment("Is Soul Thirst enabled? // 是否启用灵魂饥渴").define("enabled", true);
             soulThirstMaxLevel = builder.comment("Max Level // 最大等级").defineInRange("max_level", 5, 1, 10);
@@ -185,7 +178,6 @@ public class DaedalusConfig {
             soulThirstBonusPerLevel = builder.comment("Bonus damage increase per level after level 1 (0.5 = 50%) // 每级额外提升的百分比 (0.5 = 50%)").defineInRange("bonus_per_level", 0.5, 0.0, 10.0);
             builder.pop();
 
-            // #7
             builder.push("abyssal_protection");
             abyssalProtectionEnabled = builder.comment("Is Abyssal Protection enabled? // 是否启用深渊的加护").define("enabled", true);
             abyssalProtectionMaxLevel = builder.comment("Max Level // 最大等级").defineInRange("max_level", 5, 1, 10);
@@ -194,14 +186,12 @@ public class DaedalusConfig {
             abyssalProtectionLevelPerLevel = builder.comment("Buff level per enchantment level // 每级提供的深渊庇护等级").defineInRange("buff_level", 1, 1, 10);
             builder.pop();
 
-            // #8
             builder.push("void_breach");
             voidBreachEnabled = builder.comment("Is Void Breach enabled? // 是否启用虚空破壁").define("enabled", true);
             voidBreachTradeable = builder.comment("Is tradeable? // 是否可交易").define("tradeable", false);
             voidBreachTreasure = builder.comment("Is treasure? // 是否为宝藏附魔").define("treasure", true);
             builder.pop();
 
-            // #9
             builder.push("divine_judgment");
             divineJudgmentEnabled = builder.comment("Is Divine Judgment enabled? // 是否启用神圣裁决").define("enabled", true);
             divineJudgmentMaxLevel = builder.comment("Max Level // 最大等级").defineInRange("max_level", 5, 1, 10);
@@ -211,7 +201,6 @@ public class DaedalusConfig {
             divineJudgmentCureChance = builder.comment("Chance to cure Zombie Villager per level (0.2 = 20%) // 转化僵尸村民的百分比 (0.2 = 20%)").defineInRange("cure_chance", 0.2, 0.0, 1.0);
             builder.pop();
 
-            // #10
             builder.push("angelic_protection");
             angelicProtectionEnabled = builder.comment("Is Angelic Protection enabled? // 是否启用天使的加护").define("enabled", true);
             angelicProtectionMaxLevel = builder.comment("Max Level // 最大等级").defineInRange("max_level", 4, 1, 10);
@@ -220,7 +209,6 @@ public class DaedalusConfig {
             angelicProtectionLevelPerLevel = builder.comment("Buff level per enchantment level // 每级提供的天使庇佑等级").defineInRange("buff_level", 1, 1, 10);
             builder.pop();
 
-            // #11
             builder.push("life_siphon");
             lifeSiphonEnabled = builder.comment("Is Life Siphon enabled? // 是否启用生命虹吸").define("enabled", true);
             lifeSiphonMaxLevel = builder.comment("Max Level // 最大等级").defineInRange("max_level", 5, 1, 10);
@@ -230,14 +218,12 @@ public class DaedalusConfig {
             lifeSiphonHealPerLevel = builder.comment("Heal percentage increase per level after level 1 (0.05 = 5%) // 每级增加的百分比 (0.05 = 5%)").defineInRange("heal_increase", 0.05, 0.0, 10.0);
             builder.pop();
 
-            // #12
             builder.push("stellar_eater");
             stellarEaterEnabled = builder.comment("Is Stellar Eater enabled? // 是否启用耀星之噬").define("enabled", true);
             stellarEaterTradeable = builder.comment("Is tradeable? // 是否可交易").define("tradeable", false);
             stellarEaterTreasure = builder.comment("Is treasure? // 是否为宝藏附魔").define("treasure", true);
             builder.pop();
 
-            // #13
             builder.push("immortal");
             immortalEnabled = builder.comment("Is Immortal enabled? // 是否启用不朽").define("enabled", true);
             immortalMaxLevel = builder.comment("Max Level // 最大等级").defineInRange("max_level", 3, 1, 10);
@@ -249,7 +235,6 @@ public class DaedalusConfig {
             immortalReductionPerLevel = builder.comment("Reduction increase per level (0.05 = 5%) // 每级附魔提高的减免伤害百分比").defineInRange("reduction_per_level", 0.05, 0.0, 1.0);
             builder.pop();
 
-            // 文档说明部分
             builder.comment(
                     "=============================================================================",
                     "  代达罗斯附魔详细效果说明 / Detailed Enchantment Descriptions",

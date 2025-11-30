@@ -8,7 +8,7 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 /**
  * @author Kzjy<br>
  * 代达罗斯之弓附魔<br>
- * 显著提升弓箭、弩及三叉戟的蓄力速度
+ * 效果: 提升蓄力速度<br>
  */
 public class DaedalusBowEnchantment extends DaedalusBaseEnchantment {
     public DaedalusBowEnchantment() {

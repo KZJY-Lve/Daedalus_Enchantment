@@ -3,73 +3,184 @@ package com.kzjy.daedalus.client;
 import com.kzjy.daedalus.Daedalus;
 import com.kzjy.daedalus.client.gui.DaedalusTooltipData;
 import com.kzjy.daedalus.enchantment.DaedalusBaseEnchantment;
+import com.kzjy.daedalus.enchantment.util.EnchantmentTheme;
+import com.kzjy.daedalus.registry.DaedalusRegistries;
 import com.mojang.datafixers.util.Either;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderTooltipEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-/**
- * @author Kzjy<br>
- * 客户端 Tooltip 渲染事件处理<br>
- * 拦截附魔书的 Tooltip，将其替换为自定义的动态渲染组件
- */
 @Mod.EventBusSubscriber(modid = Daedalus.MODID, value = Dist.CLIENT)
 public class DaedalusForgeClientEvents {
+
+    private static int typewriterTick = 0;
+    private static boolean wasAltDown = false;
+
+    private static final int TICKS_PER_CHAR = 2;
+
+    @SubscribeEvent
+    public static void clientTick(TickEvent.ClientTickEvent event) {
+        if (event.phase == TickEvent.Phase.START) {
+            boolean isAltDown = Screen.hasAltDown();
+
+            if (isAltDown) {
+                if (!wasAltDown) {
+                    typewriterTick = 0;
+                }
+                typewriterTick++;
+            } else {
+                typewriterTick = 0;
+            }
+
+            wasAltDown = isAltDown;
+        }
+    }
+
+    @SubscribeEvent
+    public static void onItemTooltip(ItemTooltipEvent event) {
+        ItemStack stack = event.getItemStack();
+        if (stack.getItem() == DaedalusRegistries.LOVE_POEM_SWORD.get()) {
+            List<Component> tooltip = event.getToolTip();
+            tooltip.add(CommonComponents.EMPTY);
+            tooltip.add(Component.translatable("item.modifiers.mainhand").withStyle(ChatFormatting.GRAY));
+            MutableComponent damageText = Component.literal(" Love ")
+                    .append(Component.translatable("attribute.name.generic.attack_damage"));
+            tooltip.add(damageText);
+            MutableComponent speedText = Component.literal(" ")
+                    .append(Component.translatable("item.daedalus.love_poem_sword.speed_value"))
+                    .append(Component.literal(" "))
+                    .append(Component.translatable("attribute.name.generic.attack_speed"));
+            tooltip.add(speedText);
+        }
+    }
 
     @SubscribeEvent
     public static void onGatherTooltipComponents(RenderTooltipEvent.GatherComponents event) {
         ItemStack stack = event.getItemStack();
-        Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(stack);
+        Font font = Minecraft.getInstance().font;
 
+        if (stack.getItem() == DaedalusRegistries.LOVE_POEM_SWORD.get()) {
+            String nameKey = "item.daedalus.love_poem_sword";
+            String holdAltKey = "item.daedalus.love_poem_sword.hold_alt";
+            String speedValueKey = "item.daedalus.love_poem_sword.speed_value";
+
+            String translatedName = I18n.get(nameKey);
+            String translatedHoldAlt = I18n.get(holdAltKey);
+            String translatedSpeedValue = I18n.get(speedValueKey);
+            String attackDamageName = I18n.get("attribute.name.generic.attack_damage");
+            String attackSpeedName = I18n.get("attribute.name.generic.attack_speed");
+
+            List<String> desc0Lines = new ArrayList<>();
+            desc0Lines.add(I18n.get("item.daedalus.love_poem_sword.desc0.line1"));
+            desc0Lines.add(I18n.get("item.daedalus.love_poem_sword.desc0.line2"));
+
+            List<String> desc1Lines = new ArrayList<>();
+            for (int i = 1; i <= 7; i++) {
+                desc1Lines.add(I18n.get("item.daedalus.love_poem_sword.desc1.line" + i));
+            }
+
+            int currentMaxWidth = 0;
+            if (Screen.hasAltDown()) {
+                for (String s : desc0Lines) currentMaxWidth = Math.max(currentMaxWidth, font.width(s));
+            } else {
+                for (String s : desc1Lines) currentMaxWidth = Math.max(currentMaxWidth, font.width(s));
+                currentMaxWidth = Math.max(currentMaxWidth, font.width(translatedHoldAlt));
+            }
+
+            int charsToShow = typewriterTick / TICKS_PER_CHAR;
+            int charsProcessed = 0;
+
+            for (int i = 0; i < event.getTooltipElements().size(); i++) {
+                Either<FormattedText, TooltipComponent> element = event.getTooltipElements().get(i);
+                if (element.left().isPresent()) {
+                    String lineText = element.left().get().getString();
+
+                    if (lineText.contains(translatedName)) {
+                        event.getTooltipElements().set(i, Either.right(new DaedalusTooltipData(
+                                Component.literal(lineText), EnchantmentTheme.LOVE_BLUE, -1, false)));
+                    }
+                    else if (desc0Lines.contains(lineText)) {
+                        int lineLength = lineText.length();
+
+                        if (charsProcessed >= charsToShow) {
+                            event.getTooltipElements().set(i, Either.right(new DaedalusTooltipData(
+                                    Component.literal(""), EnchantmentTheme.LAVENDER, currentMaxWidth, true)));
+                        }
+                        else if (charsProcessed + lineLength > charsToShow) {
+                            int subLength = charsToShow - charsProcessed;
+                            String subText = lineText.substring(0, subLength);
+                            event.getTooltipElements().set(i, Either.right(new DaedalusTooltipData(
+                                    Component.literal(subText), EnchantmentTheme.LAVENDER, currentMaxWidth, true)));
+                        }
+                        else {
+                            event.getTooltipElements().set(i, Either.right(new DaedalusTooltipData(
+                                    Component.literal(lineText), EnchantmentTheme.LAVENDER, currentMaxWidth, true)));
+                        }
+
+                        charsProcessed += lineLength;
+                    }
+                    else if (desc1Lines.contains(lineText)) {
+                        event.getTooltipElements().set(i, Either.right(new DaedalusTooltipData(
+                                Component.literal(lineText), EnchantmentTheme.MIRACLE, currentMaxWidth, true)));
+                    }
+                    else if (lineText.contains(translatedHoldAlt)) {
+                        event.getTooltipElements().set(i, Either.right(new DaedalusTooltipData(
+                                Component.literal(lineText), EnchantmentTheme.MIRACLE, currentMaxWidth, true)));
+                    }
+                    else if (lineText.contains("Love") && lineText.contains(attackDamageName)) {
+                        Component prefix = Component.literal(" Love ");
+                        Component suffix = Component.literal(" " + attackDamageName).withStyle(ChatFormatting.DARK_GREEN);
+                        event.getTooltipElements().set(i, Either.right(new DaedalusTooltipData(
+                                prefix, EnchantmentTheme.MIRACLE, -1, true, suffix)));
+                    }
+                    else if (lineText.contains(translatedSpeedValue) && lineText.contains(attackSpeedName)) {
+                        Component prefix = Component.literal(" " + translatedSpeedValue + " ");
+                        Component suffix = Component.literal(" " + attackSpeedName).withStyle(ChatFormatting.DARK_GREEN);
+                        event.getTooltipElements().set(i, Either.right(new DaedalusTooltipData(
+                                prefix, EnchantmentTheme.LAVENDER, -1, true, suffix)));
+                    }
+                }
+            }
+        }
+
+        Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(stack);
         for (Enchantment ench : enchantments.keySet()) {
             if (ench instanceof DaedalusBaseEnchantment daedalusEnch) {
-                // 1. 获取附魔的基础名称 (不带等级，例如 "虚空撕裂")
                 String baseName = Component.translatable(ench.getDescriptionId()).getString();
-
-                // 2. 获取语言文件中的完整描述文本
                 String descKey = ench.getDescriptionId() + ".desc";
-                String fullDesc = "";
-                if (I18n.exists(descKey)) {
-                    fullDesc = I18n.get(descKey);
-                }
+                String fullDesc = I18n.exists(descKey) ? I18n.get(descKey) : "";
 
                 for (int i = 0; i < event.getTooltipElements().size(); i++) {
                     Either<FormattedText, TooltipComponent> element = event.getTooltipElements().get(i);
-
                     if (element.left().isPresent()) {
                         FormattedText text = element.left().get();
                         String lineText = text.getString();
-
-                        // [判定逻辑 A]：是附魔标题
-                        // 只要包含附魔的基础名称（如 "虚空撕裂"），就认为是标题
-                        // 这能覆盖 "虚空撕裂 I", "虚空撕裂 V" 等情况
                         boolean isTitle = lineText.contains(baseName);
-
-                        // [判定逻辑 B]：是附魔描述
-                        // 1. 描述不为空
-                        // 2. 这行字不是标题
-                        // 3. 完整的描述文本包含这行字 (处理自动换行)
-                        // 4. 这行字长度大于 4 (防止匹配到 "Shift", "Ctrl" 或空行)
-                        boolean isDescription = !fullDesc.isEmpty()
-                                && !isTitle
-                                && fullDesc.contains(lineText.trim())
-                                && lineText.trim().length() > 4;
+                        boolean isDescription = !fullDesc.isEmpty() && !isTitle && fullDesc.contains(lineText.trim()) && lineText.trim().length() > 4;
 
                         if (isTitle || isDescription) {
-                            // 转换为自定义渲染组件
-                            Component fullComponent = Component.literal(lineText);
-                            event.getTooltipElements().set(i, Either.right(new DaedalusTooltipData(fullComponent, daedalusEnch.getTheme())));
+                            event.getTooltipElements().set(i, Either.right(new DaedalusTooltipData(
+                                    Component.literal(lineText), daedalusEnch.getTheme(), -1, true)));
                         }
                     }
                 }

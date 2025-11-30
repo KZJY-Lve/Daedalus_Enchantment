@@ -1,6 +1,8 @@
 package com.kzjy.daedalus.client;
 
 import com.kzjy.daedalus.Daedalus;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.RenderStateShard;
@@ -12,11 +14,6 @@ import net.minecraftforge.client.event.RegisterShadersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-/**
- * @author Kzjy<br>
- * 自定义渲染类型与着色器注册<br>
- * 处理星空特效 Shader 的加载与 RenderType 定义
- */
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = Daedalus.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class DaedalusRenderTypes extends RenderType {
 
@@ -24,27 +21,29 @@ public class DaedalusRenderTypes extends RenderType {
         super(name, format, mode, bufferSize, affectsCrumbling, sortOnUpload, setupState, clearState);
     }
 
-    // 保留星空 Shader 变量
     public static ShaderInstance cosmicShader;
+    public static ShaderInstance cosmicNeoShader;
+    public static ShaderInstance glowEdgeShader;
 
-    /**
-     * 注册着色器事件<br>
-     * 加载 daedalus_cosmic 着色器
-     */
+    private static final ResourceLocation GR_GLOW_TEX = new ResourceLocation(Daedalus.MODID, "textures/misc/gr.png");
+    private static final ResourceLocation MAP_GLOW_TEX = new ResourceLocation(Daedalus.MODID, "textures/misc/gr_m.png");
+
     @SubscribeEvent
     public static void registerShaders(RegisterShadersEvent event) {
         try {
-            // 保留星空 Shader 注册
             event.registerShader(new ShaderInstance(event.getResourceProvider(), new ResourceLocation(Daedalus.MODID, "daedalus_cosmic"), DefaultVertexFormat.NEW_ENTITY),
                     shaderInstance -> cosmicShader = shaderInstance);
-        } catch (Exception e) {
-            Daedalus.LOGGER.error("Failed to register Daedalus Cosmic shader", e);
-        }
 
-        // [删除] 移除 daedalus_tooltip 的注册代码块
+            event.registerShader(new ShaderInstance(event.getResourceProvider(), new ResourceLocation(Daedalus.MODID, "cosmic_neo"), DefaultVertexFormat.NEW_ENTITY),
+                    shaderInstance -> cosmicNeoShader = shaderInstance);
+
+            event.registerShader(new ShaderInstance(event.getResourceProvider(), new ResourceLocation(Daedalus.MODID, "glow_edge"), DefaultVertexFormat.NEW_ENTITY),
+                    shaderInstance -> glowEdgeShader = shaderInstance);
+        } catch (Exception e) {
+            Daedalus.LOGGER.error("Failed to register Daedalus shaders", e);
+        }
     }
 
-    // 保留星空 RenderType
     public static final RenderType DAEDALUS_COSMIC = create("daedalus_cosmic",
             DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, true,
             RenderType.CompositeState.builder()
@@ -57,5 +56,69 @@ public class DaedalusRenderTypes extends RenderType {
                     .setOverlayState(OVERLAY)
                     .createCompositeState(true));
 
-    // [删除] 移除 TOOLTIP_BACKGROUND RenderType
+    public static final RenderType COSMIC_NEO = create("cosmic_neo",
+            DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(new RenderStateShard.ShaderStateShard(() -> cosmicNeoShader))
+                    .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation("textures/atlas/blocks.png"), false, false))
+                    .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .setCullState(NO_CULL)
+                    .setLightmapState(LIGHTMAP)
+                    .setOverlayState(OVERLAY)
+                    .createCompositeState(true));
+
+    public static final RenderType GLOWING_OUTLINE = create("glowing_outline",
+            DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(new RenderStateShard.ShaderStateShard(() -> glowEdgeShader))
+                    .setTextureState(new RenderStateShard.TextureStateShard(new ResourceLocation("textures/atlas/blocks.png"), false, false))
+                    .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                    .setCullState(NO_CULL)
+                    .setLightmapState(LIGHTMAP)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .setLayeringState(VIEW_OFFSET_Z_LAYERING)
+                    .createCompositeState(true));
+
+    private static final RenderStateShard.TransparencyStateShard ADDITIVE_TRANSPARENCY = new RenderStateShard.TransparencyStateShard("additive_transparency", () -> {
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
+    }, () -> {
+        RenderSystem.disableBlend();
+        RenderSystem.defaultBlendFunc();
+    });
+
+    public static final RenderType GR_GLOW_DEPTH = create("gr_glow_depth",
+            DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.TRIANGLES, 256, false, true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_SHADER)
+                    .setTextureState(new RenderStateShard.TextureStateShard(GR_GLOW_TEX, false, false))
+                    .setTransparencyState(ADDITIVE_TRANSPARENCY)
+                    .setCullState(NO_CULL)
+                    .setLightmapState(LIGHTMAP)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .createCompositeState(false));
+
+    public static final RenderType GR_GLOW_NO_DEPTH = create("gr_glow_no_depth",
+            DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.TRIANGLES, 256, false, true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_SHADER)
+                    .setTextureState(new RenderStateShard.TextureStateShard(GR_GLOW_TEX, false, false))
+                    .setTransparencyState(ADDITIVE_TRANSPARENCY)
+                    .setCullState(NO_CULL)
+                    .setLightmapState(LIGHTMAP)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .setDepthTestState(NO_DEPTH_TEST)
+                    .createCompositeState(false));
+
+    public static final RenderType GR_GLOW_DEPTH_2 = create("gr_glow_depth_2",
+            DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.TRIANGLES, 256, false, true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_SHADER)
+                    .setTextureState(new RenderStateShard.TextureStateShard(MAP_GLOW_TEX, false, false))
+                    .setTransparencyState(ADDITIVE_TRANSPARENCY)
+                    .setCullState(NO_CULL)
+                    .setLightmapState(LIGHTMAP)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .createCompositeState(false));
 }

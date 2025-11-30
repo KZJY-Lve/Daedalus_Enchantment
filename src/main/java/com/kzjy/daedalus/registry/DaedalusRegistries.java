@@ -3,6 +3,7 @@ package com.kzjy.daedalus.registry;
 import com.kzjy.daedalus.Daedalus;
 import com.kzjy.daedalus.effect.*;
 import com.kzjy.daedalus.enchantment.*;
+import com.kzjy.daedalus.item.LovePoemSwordItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffect;
@@ -19,7 +20,7 @@ import net.minecraftforge.registries.RegistryObject;
 /**
  * @author Kzjy<br>
  * 模组注册中心<br>
- * 负责注册所有的物品、附魔、药水效果及创造模式选项卡
+ * 包含物品、附魔、药水效果及创造模式物品栏的注册
  */
 public class DaedalusRegistries {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Daedalus.MODID);
@@ -27,11 +28,16 @@ public class DaedalusRegistries {
     public static final DeferredRegister<MobEffect> MOB_EFFECTS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, Daedalus.MODID);
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Daedalus.MODID);
 
+    // 物品
+    public static final RegistryObject<Item> LOVE_POEM_SWORD = ITEMS.register("love_poem_sword", LovePoemSwordItem::new);
+
+    // 效果
     public static final RegistryObject<MobEffect> ABYSSAL_CURSE = MOB_EFFECTS.register("abyssal_curse", AbyssalCurseEffect::new);
     public static final RegistryObject<MobEffect> MARK_OF_SIN = MOB_EFFECTS.register("mark_of_sin", MarkOfSinEffect::new);
     public static final RegistryObject<MobEffect> ABYSSAL_PROTECTION = MOB_EFFECTS.register("abyssal_protection", AbyssalProtectionEffect::new);
     public static final RegistryObject<MobEffect> ANGELIC_PROTECTION = MOB_EFFECTS.register("angelic_protection", AngelicProtectionEffect::new);
 
+    // 附魔
     public static final RegistryObject<Enchantment> DAEDALUS_BOW = ENCHANTMENTS.register("daedalus_bow", DaedalusBowEnchantment::new);
     public static final RegistryObject<Enchantment> ABYSSAL_GAZE = ENCHANTMENTS.register("abyssal_gaze", AbyssalGazeEnchantment::new);
     public static final RegistryObject<Enchantment> CURSED_CHAIN = ENCHANTMENTS.register("cursed_chain", CursedChainEnchantment::new);
@@ -50,6 +56,8 @@ public class DaedalusRegistries {
             .icon(() -> new ItemStack(net.minecraft.world.item.Items.ENCHANTED_BOOK))
             .title(Component.translatable("itemGroup.daedalus"))
             .displayItems((parameters, output) -> {
+                output.accept(LOVE_POEM_SWORD.get().getDefaultInstance());
+
                 for (RegistryObject<Enchantment> entry : ENCHANTMENTS.getEntries()) {
                     Enchantment enchantment = entry.get();
                     int min = enchantment.getMinLevel();

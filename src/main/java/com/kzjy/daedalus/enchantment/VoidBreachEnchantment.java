@@ -8,7 +8,7 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 /**
  * @author Kzjy<br>
  * 虚空破壁附魔<br>
- * 赋予攻击无视无敌帧与伤害上限的能力
+ * 效果: 穿透无敌帧与伤害上限<br>
  */
 public class VoidBreachEnchantment extends DaedalusBaseEnchantment {
     public VoidBreachEnchantment() {

@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "daedalus.refmap.json",
   "mixins": [
+    "LivingEntityAccessor",
     "MixinDamageSource",
     "MixinDamageSources",
     "MixinLivingDamageEvent",
@@ -12,11 +13,14 @@
     "MixinLivingEvent",
     "MixinLivingHealEvent",
     "MixinLivingHurtEvent",
+    "MixinSynchedEntityData",
     "ZombieVillagerInvoker"
   ],
   "injectors": {
     "defaultRequire": 1
   },
   "client": [
+    "MixinItemInHandRenderer",
+    "MixinTooltipColor"
   ]
 }

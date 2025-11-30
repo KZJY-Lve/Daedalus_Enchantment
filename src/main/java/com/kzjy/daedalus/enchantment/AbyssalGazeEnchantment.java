@@ -8,7 +8,7 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 /**
  * @author Kzjy<br>
  * 深渊凝视附魔<br>
- * 当玩家注视目标时，给予目标深渊诅咒效果
+ * 效果: 视线接触施加深渊诅咒<br>
  */
 public class AbyssalGazeEnchantment extends DaedalusBaseEnchantment {
     public AbyssalGazeEnchantment() {

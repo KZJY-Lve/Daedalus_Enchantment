@@ -12,6 +12,7 @@ import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.IGeometryLoader;
 import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
@@ -19,47 +20,71 @@ import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
 import java.util.Collections;
 import java.util.function.Function;
 
-/**
- * @author Kzjy<br>
- * 自定义模型加载器<br>
- * 用于解析 JSON 中的 daedalus_cosmic 属性，加载星空特效模型
- */
 public class DaedalusModelLoader implements IGeometryLoader<DaedalusModelLoader.DaedalusCosmicGeometry> {
 
     @Override
     public DaedalusCosmicGeometry read(JsonObject jsonObject, JsonDeserializationContext context) throws JsonParseException {
-        // 1. 读取我们的自定义配置 (mask 路径)
         JsonObject cosmicObj = jsonObject.getAsJsonObject("daedalus_cosmic");
-        if (cosmicObj == null) throw new IllegalStateException("Missing 'daedalus_cosmic' object.");
+        boolean isNeo = false;
+        int neoType = 0;
+
+        if (cosmicObj == null) {
+            cosmicObj = jsonObject.getAsJsonObject("cosmic_neo");
+            if (cosmicObj != null) {
+                isNeo = true;
+                neoType = GsonHelper.getAsInt(cosmicObj, "type", 0);
+            }
+        }
+
+        if (cosmicObj == null) throw new IllegalStateException("Missing 'daedalus_cosmic' or 'cosmic_neo' object.");
 
         String maskPath = cosmicObj.get("mask").getAsString();
 
-        // 2. 复制并清洗 JSON，交给 BlockModel 处理基础部分
+        int glowColor = 0xFFFFFF;
+        float glowWidth = 0.0f;
+        float glowOffset = 0.0f;
+
+        if (jsonObject.has("glow_edge")) {
+            JsonObject glowObj = jsonObject.getAsJsonObject("glow_edge");
+            glowColor = GsonHelper.getAsInt(glowObj, "color", 16777215);
+            glowWidth = GsonHelper.getAsFloat(glowObj, "width", 1.0f);
+            glowOffset = GsonHelper.getAsFloat(glowObj, "offset", 0.02f);
+        }
+
         JsonObject clean = jsonObject.deepCopy();
         clean.remove("daedalus_cosmic");
+        clean.remove("cosmic_neo");
+        clean.remove("glow_edge");
         clean.remove("loader");
 
         BlockModel baseModel = context.deserialize(clean, BlockModel.class);
 
-        return new DaedalusCosmicGeometry(baseModel, new ResourceLocation(maskPath));
+        return new DaedalusCosmicGeometry(baseModel, new ResourceLocation(maskPath), glowColor, glowWidth, glowOffset, isNeo, neoType);
     }
 
     public static class DaedalusCosmicGeometry implements IUnbakedGeometry<DaedalusCosmicGeometry> {
         private final BlockModel baseModel;
         private final ResourceLocation maskLocation;
+        private final int glowColor;
+        private final float glowWidth;
+        private final float glowOffset;
+        private final boolean isNeo;
+        private final int neoType;
 
-        public DaedalusCosmicGeometry(BlockModel baseModel, ResourceLocation maskLocation) {
+        public DaedalusCosmicGeometry(BlockModel baseModel, ResourceLocation maskLocation, int glowColor, float glowWidth, float glowOffset, boolean isNeo, int neoType) {
             this.baseModel = baseModel;
             this.maskLocation = maskLocation;
+            this.glowColor = glowColor;
+            this.glowWidth = glowWidth;
+            this.glowOffset = glowOffset;
+            this.isNeo = isNeo;
+            this.neoType = neoType;
         }
 
         @Override
         public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
-            // 4. 调用 baseModel.bake 生成基础物品模型 (处理 layer0 等)
             BakedModel bakedBaseModel = this.baseModel.bake(baker, this.baseModel, spriteGetter, modelState, modelLocation, true);
-
-            // 5. 包裹为星空模型
-            return new DaedalusCosmicBakedModel(bakedBaseModel, Collections.singletonList(maskLocation));
+            return new DaedalusCosmicBakedModel(bakedBaseModel, Collections.singletonList(maskLocation), glowColor, glowWidth, glowOffset, isNeo, neoType);
         }
 
         @Override

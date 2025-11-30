@@ -16,16 +16,20 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
  * @author Kzjy<br>
- * 混入 DamageSources 类以修改伤害源属性<br>
- * 主要用于为特定附魔的攻击附加穿透或破壁标签
+ * 伤害源工厂混入<br>
+ * 在伤害源创建阶段注入特殊Tag (BypassAll/VoidBreach)<br>
+ * <p>
+ * 逻辑:<br>
+ * 1. 玩家攻击注入: {@link #daedalus$modifyPlayerAttack}<br>
+ * 2. 生物攻击注入: {@link #daedalus$modifyMobAttack}<br>
  */
 @Mixin(DamageSources.class)
 public class MixinDamageSources {
 
     /**
-     * 拦截玩家攻击产生的伤害源<br>
-     * 耀星之噬：赋予 BypassAll (穿透 Cataclysm 的无敌和减伤)<br>
-     * 虚空破壁：赋予 VoidBreach 标记
+     * 拦截玩家攻击源<br>
+     * 判定: 耀星之噬/爱之诗 -> BypassAll<br>
+     * 判定: 虚空破壁 -> VoidBreach
      */
     @Inject(method = "playerAttack", at = @At("RETURN"))
     private void daedalus$modifyPlayerAttack(Player player, CallbackInfoReturnable<DamageSource> cir) {
@@ -33,8 +37,11 @@ public class MixinDamageSources {
         if (source instanceof IDaedalusDamageSource ds) {
             ItemStack stack = player.getMainHandItem();
 
-            if (DaedalusConfig.COMMON.stellarEaterEnabled.get() &&
-                    EnchantmentHelper.getItemEnchantmentLevel(DaedalusRegistries.STELLAR_EATER.get(), stack) > 0) {
+            boolean isStellarOrLove = (DaedalusConfig.COMMON.stellarEaterEnabled.get() &&
+                    EnchantmentHelper.getItemEnchantmentLevel(DaedalusRegistries.STELLAR_EATER.get(), stack) > 0)
+                    || stack.getItem() == DaedalusRegistries.LOVE_POEM_SWORD.get();
+
+            if (isStellarOrLove) {
                 ds.daedalus$setBypassAll(true);
             }
 
@@ -46,8 +53,8 @@ public class MixinDamageSources {
     }
 
     /**
-     * 拦截生物攻击产生的伤害源<br>
-     * 逻辑同上，确保生物使用附魔武器时也能生效
+     * 拦截生物攻击源<br>
+     * 逻辑同上, 兼容非玩家实体
      */
     @Inject(method = "mobAttack", at = @At("RETURN"))
     private void daedalus$modifyMobAttack(LivingEntity attacker, CallbackInfoReturnable<DamageSource> cir) {
@@ -55,8 +62,11 @@ public class MixinDamageSources {
         if (source instanceof IDaedalusDamageSource ds) {
             ItemStack stack = attacker.getMainHandItem();
 
-            if (DaedalusConfig.COMMON.stellarEaterEnabled.get() &&
-                    EnchantmentHelper.getItemEnchantmentLevel(DaedalusRegistries.STELLAR_EATER.get(), stack) > 0) {
+            boolean isStellarOrLove = (DaedalusConfig.COMMON.stellarEaterEnabled.get() &&
+                    EnchantmentHelper.getItemEnchantmentLevel(DaedalusRegistries.STELLAR_EATER.get(), stack) > 0)
+                    || stack.getItem() == DaedalusRegistries.LOVE_POEM_SWORD.get();
+
+            if (isStellarOrLove) {
                 ds.daedalus$setBypassAll(true);
             }
 
